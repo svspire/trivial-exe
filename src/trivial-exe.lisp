@@ -10,7 +10,7 @@
   #+sbcl
   sb-ext:*runtime-pathname*
   #+ccl
-  (truename (make-pathname :host "ccl"))
+  (truename (make-pathname :host "ccl")) ; yeah no. This cannot possibly work.
   #+ecl
   (truename (make-pathname :host "sys"))
   #-(or sbcl ccl ecl)
@@ -22,12 +22,15 @@
 
 (defun ensure-executable (pathname)
   "Ensure a binary is executable."
-  #-(or win32 mswindows)
+ ;;; #-(or win32 mswindows)
+  #+IGNORE
   (progn
     (setf (osicat:file-permissions pathname)
           (list :user-read
                 :user-write
                 :user-exec))
     t)
-  #+(or win32 mswindows)
+  ;;; #+(or win32 mswindows)
+  #-IGNORE
+  (format t "Must do this manually: chmod 755 ~A~%" pathname)
   t)
